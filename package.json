@@ -10,7 +10,7 @@
     "electron-dev": "concurrently \"cross-env BROWSER=none npm start\" \"wait-on http://localhost:3000 && electron .\"",
     "postinstall": "electron-builder install-app-deps",
     "preelectron-pack": "npm run build",
-    "electron-pack": "electron-builder build -wm"
+    "electron-pack": "electron-builder build -w"
   },
   "homepage": "./",
   "author": {
@@ -22,13 +22,12 @@
     "productName": "Cismu Player",
     "copyright": "Copyright © 2019 ${author}",
     "mac": {
-      "category": "public.app-category.utilities"
+      "target": "dmg",
+      "icon": "build/icon.png"
     },
     "win": {
-      "target": [
-        "portable",
-        "nsis"
-      ]
+      "target": "nsis",
+      "icon": "build/icon.png"
     },
     "nsis": {
       "oneClick": false,
@@ -68,5 +67,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "electron": "^19.0.4",
+    "electron-builder": "^23.0.3"
   }
 }

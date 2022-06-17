@@ -31,16 +31,12 @@ const listenEvents = async () => {
 let mainWindow;
 
 function createWindow() {
+  console.log(path.join(__dirname, "preload.js"))
   mainWindow = new BrowserWindow({
     width: 900,
     height: 680,
     webPreferences: {
-      webPreferences: {
-        nodeIntegration: false,
-        contextIsolation: true,
-        enableRemoteModule: false,
-        preload: path.join(__dirname, "preload.js"),
-      },
+      preload: path.join(__dirname, "preload.js"),
     },
   });
   mainWindow.loadURL(
