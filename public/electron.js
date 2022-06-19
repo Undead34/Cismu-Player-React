@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, session } = require("electron");
 const isDev = require("electron-is-dev");
 const path = require("path");
 const fs = require("fs");
@@ -31,7 +31,6 @@ const listenEvents = async () => {
 let mainWindow;
 
 function createWindow() {
-  console.log(path.join(__dirname, "preload.js"))
   mainWindow = new BrowserWindow({
     width: 900,
     height: 680,
@@ -46,12 +45,14 @@ function createWindow() {
   );
   if (isDev) {
     // Open the DevTools.
-    //BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');
+    const reactDevToolsPath = path.join(app.getPath("home"), "AppData", "Local", "Google", "Chrome", "User Data", "Profile 3", "Extensions", "fmkadmapgofadopljbjfkapdkoienihi", "4.24.7_0");
+    session.defaultSession.loadExtension(reactDevToolsPath);
     mainWindow.webContents.openDevTools();
+    console.log("Hello from dev");
   }
   listenEvents();
   mainWindow.on("closed", () => (mainWindow = null));
-  mainWindow.removeMenu();
+  // mainWindow.removeMenu();
 }
 
 app.on("ready", createWindow);
