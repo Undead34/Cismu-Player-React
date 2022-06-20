@@ -1,12 +1,22 @@
 import ProgressBar from "./components/progress-bar.component";
-import './App.css';
+import React from "react";
+import "./App.css";
 
 function App() {
   return (
     <div className="App">
-      <ProgressBar key="0" bgcolor="#6a1b9a" completed="10" />
+      <ProgressBar bgcolor="#ef6c00" progressBarEvent="progress"/>
     </div>
   );
 }
 
 export default App;
+
+/*
+window.api.invoke("get-local-sounds", {
+  eventName: "progress",
+  min: 0,
+  max: 100,
+  progress: 0
+})
+*/
