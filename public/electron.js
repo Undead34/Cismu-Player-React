@@ -34,12 +34,18 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 900,
     height: 680,
+    minHeight: 600,
+    minWidth: 785,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
   });
 
-  mainWindow.loadURL(isDev ? "http://localhost:3000" : `file://${path.join(__dirname, "../build/index.html")}`);
+  mainWindow.loadURL(
+    isDev
+      ? "http://localhost:3000"
+      : `file://${path.join(__dirname, "../build/index.html")}`
+  );
 
   if (isDev) {
     const reactDevToolsPath = path.join(
@@ -52,7 +58,7 @@ function createWindow() {
 
   listenEvents();
   mainWindow.on("closed", () => (mainWindow = null));
-  
+
   if (!isDev) mainWindow.removeMenu();
 }
 

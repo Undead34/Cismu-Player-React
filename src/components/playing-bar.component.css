@@ -1,0 +1,7 @@
+.playing-bar-controls button {
+  background: transparent !important;
+}
+
+.playing-bar-controls .play-pause-button {
+  background-color: #e9e9e9 !important;
+}

@@ -1,11 +1,12 @@
-import ProgressBar from "./components/progress-bar.component";
+import PlayingBar from "./components/playing-bar.component"
 import React from "react";
 import "./App.css";
 
 function App() {
   return (
     <div className="App">
-      <ProgressBar bgcolor="#ef6c00" progressBarEvent="progress"/>
+      <PlayingBar></PlayingBar>
+      
     </div>
   );
 }

@@ -1,10 +1,14 @@
+import { Progress } from "semantic-ui-react";
 import React from "react";
 
+/**
+ * @param {String} props.progressBarEvent
+ */
 class ProgressBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      completed: 0,
+      percent: 0,
     };
   }
 
@@ -20,40 +24,13 @@ class ProgressBar extends React.Component {
 
   completedUpdate(completed) {
     this.setState({
-      completed: completed
+      percent: completed
     });
   }
 
   render() {
-    const containerStyles = {
-      height: 20,
-      width: "100%",
-      backgroundColor: "#e0e0de",
-      borderRadius: 50,
-      margin: 0,
-    };
-
-    const fillerStyles = {
-      height: "100%",
-      width: `${this.state.completed}%`,
-      backgroundColor: this.props.bgcolor,
-      borderRadius: "inherit",
-      transition: "width 1s ease-in-out",
-      textAlign: "right",
-    };
-
-    const labelStyles = {
-      padding: 5,
-      color: "white",
-      fontWeight: "bold",
-    };
-
     return (
-      <div style={containerStyles}>
-        <div style={fillerStyles}>
-          <span style={labelStyles}>{`${this.state.completed}%`}</span>
-        </div>
-      </div>
+      <Progress percent={this.state.percent}></Progress>
     );
   }
 }
