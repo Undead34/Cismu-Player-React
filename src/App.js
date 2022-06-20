@@ -1,12 +1,14 @@
 import PlayingBar from "./components/playing-bar.component"
+import MusicsPlaylistTrack from "./components/musics-playlist-track.component"
 import React from "react";
 import "./App.css";
 
 function App() {
   return (
     <div className="App">
-      <PlayingBar></PlayingBar>
       
+      <PlayingBar></PlayingBar>
+      <MusicsPlaylistTrack></MusicsPlaylistTrack>
     </div>
   );
 }
