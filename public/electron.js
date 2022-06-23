@@ -1,3 +1,4 @@
+const { bootstrapTest } = require("../app/modules/onStartup");
 const { app, BrowserWindow, ipcMain, session } = require("electron");
 const isDev = require("electron-is-dev");
 const path = require("path");
@@ -55,7 +56,8 @@ function createWindow() {
     session.defaultSession.loadExtension(reactDevToolsPath);
     mainWindow.webContents.openDevTools();
   }
-
+  
+  bootstrapTest();
   listenEvents();
   mainWindow.on("closed", () => (mainWindow = null));
 
