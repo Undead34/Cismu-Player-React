@@ -35,7 +35,7 @@ const fs = require("fs");
 }
 
 /**
- * Validate if a file exists
+ * Validate if a file or folder exists
  * @param {string} path path to validate
  * @returns boolean
  */
