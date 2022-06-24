@@ -16,6 +16,7 @@ const bootstrapTest = async () => {
       await createFolder(root);
       await createFolder(music);
       let db = await new Database();
+      await db.init();
       await db.close();
       return true;
     }

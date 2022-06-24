@@ -1,12 +1,107 @@
-const sqlite3 = require("better-sqlite3");
+const sqlite3 = require("sqlite3").verbose();
 const constants = require("./constants");
 
 class Database {
   constructor(dbName = undefined) {
     if (!dbName) dbName = constants.appPath.database;
-    this.db = new sqlite3(dbName, { verbose: console.log });
+    this.db = new sqlite3.Database(dbName);
   }
 
+  init() {
+    return new Promise((resolve, reject) => {
+      this.db.run(
+        `CREATE TABLE IF NOT EXISTS songs (id INTEGER PRIMARY KEY, title TEXT, artist TEXT, album TEXT, year INTEGER, genre TEXT, path TEXT, duration INTEGER, size INTEGER, created_at INTEGER, updated_at INTEGER)`,
+        (err) => {
+          if (err) reject(err);
+          else resolve(true);
+        }
+      );
+    });
+  }
+
+  insert(song) {
+    return new Promise((resolve, reject) => {
+      this.db.run(
+        `INSERT INTO songs (title, artist, album, year, genre, path, duration, size, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          song.title,
+          song.artist,
+          song.album,
+          song.year,
+          song.genre,
+          song.path,
+          song.duration,
+          song.size,
+          song.created_at,
+          song.updated_at,
+        ],
+        (err) => {
+          if (err) reject(err);
+          else resolve(true);
+        }
+      );
+    });
+  }
+
+  update(song) {
+    return new Promise((resolve, reject) => {
+      this.db.run(
+        `UPDATE songs SET title = ?, artist = ?, album = ?, year = ?, genre = ?, path = ?, duration = ?, size = ?, updated_at = ? WHERE id = ?`,
+        [
+          song.title,
+          song.artist,
+          song.album,
+          song.year,
+          song.genre,
+          song.path,
+          song.duration,
+          song.size,
+          song.updated_at,
+          song.id,
+        ],
+        (err) => {
+          if (err) reject(err);
+          else resolve(true);
+        }
+      );
+    });
+  }
+
+  delete(id) {
+    return new Promise((resolve, reject) => {
+      this.db.run(`DELETE FROM songs WHERE id = ?`, [id], (err) => {
+        if (err) reject(err);
+        else resolve(true);
+      });
+    });
+  }
+
+  getAll() {
+    return new Promise((resolve, reject) => {
+      this.db.all(`SELECT * FROM songs`, (err, rows) => {
+        if (err) reject(err);
+        else resolve(rows);
+      });
+    });
+  }
+
+  getById(id) {
+    return new Promise((resolve, reject) => {
+      this.db.get(`SELECT * FROM songs WHERE id = ?`, [id], (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
+    });
+  }
+
+  close() {
+    this.db.close();
+  }
+}
+
+module.exports = Database;
+
+/*
   async init() {
     let sql = `
       CREATE TABLE IF NOT EXISTS songs (
@@ -92,6 +187,4 @@ class Database {
   close() {
     this.db.close();
   }
-}
-
-module.exports = Database;
+*/
