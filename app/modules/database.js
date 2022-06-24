@@ -46,6 +46,28 @@ class Database {
     await this.run(sql, values);
   }
 
+  async update(song) {
+    let sql = `UPDATE songs SET
+      name = ?, artist = ?, album = ?, path = ?,
+      duration = ?, size = ?, updated_at = ?
+    WHERE id = ?;`;
+
+    let updated_at = new Date().getTime();
+
+    let values = [
+      song.name,
+      song.artist,
+      song.album,
+      song.path,
+      song.duration,
+      song.size,
+      updated_at,
+      song.id,
+    ];
+
+    await this.run(sql, values);
+  }
+
   run(sql) {
     return this.db.prepare(sql).run();
   }
