@@ -4,6 +4,7 @@ const constants = require("./constants");
 
 const bootstrapTest = async () => {
   try {
+    console.log("bootstrapTest");
     let root = constants.appPath.root;
     let music = constants.appPath.music;
     let database = constants.appPath.database;
