@@ -4,56 +4,54 @@ const constants = require("./constants");
 class Database {
   constructor(dbName = undefined) {
     if (!dbName) dbName = constants.appPath.database;
-    this.db = new sqlite3.Database(dbName);
+    this.db = new sqlite3(dbName, { verbose: console.log });
   }
 
-  createTable(tableName, columns) {
-    this.db.run(`CREATE TABLE IF NOT EXISTS ${tableName} (${columns})`);
+  async init() {
+    let sql = `
+      CREATE TABLE IF NOT EXISTS songs (
+        id INTEGER PRIMARY KEY,
+        name TEXT,
+        artist TEXT,
+        album TEXT,
+        path TEXT,
+        duration INTEGER,
+        size INTEGER,
+        created_at INTEGER,
+        updated_at INTEGER
+      );`;
+
+    await this.run(sql);
   }
 
-  insert(tableName, columns, values) {
-    this.db.run(`INSERT INTO ${tableName} (${columns}) VALUES (${values})`);
+  async insert(song) {
+    let sql = `
+    INSERT INTO songs ( name, artist, album, path, duration, size, created_at, updated_at)
+    VALUES ( ?, ?, ?, ?, ?, ?, ?, ?);`;
+
+    let created_at = new Date().getTime();
+    let updated_at = created_at;
+
+    let values = [
+      song.name,
+      song.artist,
+      song.album,
+      song.path,
+      song.duration,
+      song.size,
+      created_at,
+      updated_at,
+    ];
+
+    await this.run(sql, values);
   }
 
-  select(tableName, columns, where) {
-    return new Promise((resolve, reject) => {
-      this.db.all(
-        `SELECT ${columns} FROM ${tableName} WHERE ${where}`,
-        (err, rows) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(rows);
-          }
-        }
-      );
-    });
-  }
-
-  update(tableName, columns, values, where) {
-    this.db.run(
-      `UPDATE ${tableName} SET ${columns} = ${values} WHERE ${where}`
-    );
-  }
-
-  delete(tableName, where) {
-    this.db.run(`DELETE FROM ${tableName} WHERE ${where}`);
+  run(sql) {
+    return this.db.prepare(sql).run();
   }
 
   close() {
     this.db.close();
-  }
-
-  run(sql) {
-    return new Promise((resolve, reject) => {
-      this.db.run(sql, (err) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve();
-        }
-      });
-    });
   }
 }
 
