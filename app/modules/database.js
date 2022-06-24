@@ -10,7 +10,7 @@ class Database {
   init() {
     return new Promise((resolve, reject) => {
       this.db.run(
-        `CREATE TABLE IF NOT EXISTS songs (id INTEGER PRIMARY KEY, title TEXT, artist TEXT, album TEXT, year INTEGER, genre TEXT, path TEXT, duration INTEGER, size INTEGER, created_at INTEGER, updated_at INTEGER)`,
+        `CREATE TABLE IF NOT EXISTS songs (id INTEGER PRIMARY KEY, title TEXT, artist TEXT, album TEXT, year INTEGER, genre TEXT, path TEXT, duration INTEGER, size INTEGER, hash TEXT, picture BLOB created_at INTEGER, updated_at INTEGER)`,
         (err) => {
           if (err) reject(err);
           else resolve(true);
@@ -19,10 +19,10 @@ class Database {
     });
   }
 
-  insert(song) {
+  addMusic(song) {
     return new Promise((resolve, reject) => {
       this.db.run(
-        `INSERT INTO songs (title, artist, album, year, genre, path, duration, size, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO songs (title, artist, album, year, genre, path, duration, size, hash, picture, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           song.title,
           song.artist,
@@ -32,6 +32,8 @@ class Database {
           song.path,
           song.duration,
           song.size,
+          song.hash,
+          song.picture,
           song.created_at,
           song.updated_at,
         ],
@@ -90,6 +92,15 @@ class Database {
       this.db.get(`SELECT * FROM songs WHERE id = ?`, [id], (err, row) => {
         if (err) reject(err);
         else resolve(row);
+      });
+    });
+  }
+
+  clearAllMusic() {
+    return new Promise((resolve, reject) => {
+      this.db.run(`DELETE FROM songs`, (err) => {
+        if (err) reject(err);
+        else resolve(true);
       });
     });
   }

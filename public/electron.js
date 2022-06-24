@@ -49,7 +49,10 @@ function createWindow() {
       : `file://${path.join(__dirname, "../build/index.html")}`
   );
 
-  mainWindow.on("ready-to-show", mainWindow.show);
+  mainWindow.on("ready-to-show", () => {
+    mainWindow.show();
+    ipcMain.emit("scan-local-music");
+  });
 
   if (isDev) {
     const reactDevToolsPath = path.join(

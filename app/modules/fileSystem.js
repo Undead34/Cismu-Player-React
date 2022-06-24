@@ -102,6 +102,18 @@ const deleteFile = (path) => {
   });
 }
 
+const getFileSize = (path) => {
+  return new Promise((resolve, rejects) => {
+    try {
+      let stats = fs.statSync(path);
+      resolve(stats.size);
+    } catch (error) {
+      console.log(error.message);
+      rejects();
+    }
+  });
+}
+
 
 module.exports = {
   listFiles,
@@ -109,5 +121,6 @@ module.exports = {
   deleteFile,
   deleteFolder,
   createFolder,
-  exists
+  exists,
+  getFileSize
 }
