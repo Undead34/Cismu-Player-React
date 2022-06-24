@@ -37,6 +37,7 @@ function createWindow() {
     height: 680,
     minHeight: 600,
     minWidth: 785,
+    show: false,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
@@ -47,6 +48,8 @@ function createWindow() {
       ? "http://localhost:3000"
       : `file://${path.join(__dirname, "../build/index.html")}`
   );
+
+  mainWindow.on("ready-to-show", mainWindow.show);
 
   if (isDev) {
     const reactDevToolsPath = path.join(

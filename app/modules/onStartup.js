@@ -4,14 +4,15 @@ const constants = require("./constants");
 
 const bootstrapTest = async () => {
   try {
-    console.log("bootstrapTest");
     let root = constants.appPath.root;
     let music = constants.appPath.music;
     let database = constants.appPath.database;
 
-    if (exists(root) && exists(music) && exists(database)) {
+    if (await exists(root) && await exists(music) && await exists(database)) {
+      console.log("bootstrapTest: OK");
       return false;
-    } else if (!exists(root) || !exists(music) || !exists(database)) {
+    } else if (!await exists(root) || !await exists(music) || !await exists(database)) {
+      console.log("Creating folders...");
       await createFolder(root);
       await createFolder(music);
       let db = await new Database();
