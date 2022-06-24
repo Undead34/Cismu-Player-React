@@ -13,6 +13,8 @@ const getMetaData = async (buffer) => {
       .setTagsToRead(["title", "artist", "album", "picture", "year", "genre"])
       .read({
         onSuccess: function (tag) {
+          console.log(tag)
+          console.log(tag.tags)
           resolve(tag.tags);
         },
         onError: function (error) {
@@ -58,10 +60,10 @@ const fullScanMusic = async () => {
       .createHash("md5")
       .update(bufferMusic)
       .digest("hex");
-    music.picture = musicMetaData.picture ? musicMetaData.picture.data : null;
-    music.create_at = new Date();
-    music.update_at = new Date();
-
+    music.picture = musicMetaData.picture ? Buffer.from(musicMetaData.picture.data) : null;
+    music.create_at = await new Date().toISOString();
+    music.update_at = await new Date().toISOString();
+    console.log(typeof musicMetaData.picture.data)
     await db.addMusic(music);
   }
 

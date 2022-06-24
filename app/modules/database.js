@@ -8,14 +8,31 @@ class Database {
   }
 
   init() {
-    return new Promise((resolve, reject) => {
-      this.db.run(
-        `CREATE TABLE IF NOT EXISTS songs (id INTEGER PRIMARY KEY, title TEXT, artist TEXT, album TEXT, year INTEGER, genre TEXT, path TEXT, duration INTEGER, size INTEGER, hash TEXT, picture BLOB created_at INTEGER, updated_at INTEGER)`,
-        (err) => {
-          if (err) reject(err);
-          else resolve(true);
-        }
-      );
+    return new Promise(() => {
+      let songsTable = `CREATE TABLE IF NOT EXISTS songs (
+        id INTEGER PRIMARY KEY,
+        title TEXT,
+        artist TEXT,
+        album TEXT,
+        year INTEGER,
+        genre TEXT,
+        path TEXT,
+        duration INTEGER,
+        size INTEGER,
+        hash TEXT,
+        picture BLOB,
+        created_at TEXT,
+        updated_at TEXT)`;
+
+      let headerTable = `CREATE TABLE IF NOT EXISTS header (
+          num_songs INTEGER,
+          app_version TEXT,
+          database_version TEXT)`;
+
+      this.db.serialize(() => {
+        this.db.run(songsTable);
+        this.db.run(headerTable);
+      });
     });
   }
 

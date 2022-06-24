@@ -57,7 +57,7 @@ function createWindow() {
   if (isDev) {
     const reactDevToolsPath = path.join(
       app.getPath("home"),
-      "AppData/Local/Google/Chrome/User Data/Profile 3/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.24.7_1"
+      "AppData/Local/Google/Chrome/User Data/Profile 10/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.24.7_0"
     );
     session.defaultSession.loadExtension(reactDevToolsPath);
     mainWindow.webContents.openDevTools();
