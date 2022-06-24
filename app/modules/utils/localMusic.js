@@ -1,10 +1,24 @@
 const { appPath, supportedFormats } = require("../constants");
 const getMp3Duration = require("get-mp3-duration");
-const fileSystem = require('../fileSystem');
-const jsmediatags = require('jsmediatags');
+const fileSystem = require("../fileSystem");
+const jsmediatags = require("jsmediatags");
 const Database = require("../database");
 const crypto = require("crypto");
 const path = require("path");
+const jimp = require("jimp");
+
+const imageCompression = async (buffer) => {
+  let image = await jimp.read(buffer);
+  console.log(image)
+  // // await image.resize(256, 256) // 
+  // let f = await image.quality(60); // set JPEG quality
+  // let newBuffer = await f.getBuffer(jimp.AUTO);
+
+  // console.log(buffer.length); // 17196
+  // console.log(newBuffer); // 35060
+
+  return image;
+};
 
 // get the metadata of the music, I am using buffers to read the file only once
 const getMetaData = async (buffer) => {
@@ -13,8 +27,6 @@ const getMetaData = async (buffer) => {
       .setTagsToRead(["title", "artist", "album", "picture", "year", "genre"])
       .read({
         onSuccess: function (tag) {
-          console.log(tag)
-          console.log(tag.tags)
           resolve(tag.tags);
         },
         onError: function (error) {
@@ -23,12 +35,12 @@ const getMetaData = async (buffer) => {
         },
       });
   });
-}
+};
 
 const fullScanMusic = async () => {
   const db = new Database();
   db.clearAllMusic();
-  
+
   let musics = await fileSystem.listFiles(appPath.music);
   let musicFiles = [];
   for (let music of musics) {
@@ -45,7 +57,7 @@ const fullScanMusic = async () => {
 
     let music = {};
     let musicMetaData = await getMetaData(bufferMusic);
-    
+
     music.id = await crypto.randomUUID();
     music.title = musicMetaData.title;
     music.artist = musicMetaData.artist;
@@ -54,24 +66,33 @@ const fullScanMusic = async () => {
     music.picture = musicMetaData.picture;
     music.genre = musicMetaData.genre;
     music.path = musicPath;
-    music.duration = path.extname(musicFile) === ".mp3" ? await getMp3Duration(bufferMusic) : 0;
+    music.duration = path.extname(musicFile) === ".mp3"
+      ? await getMp3Duration(bufferMusic)
+      : 0;
     music.size = await fileSystem.getFileSize(musicPath);
     music.hash = await crypto
       .createHash("md5")
       .update(bufferMusic)
       .digest("hex");
-    music.picture = musicMetaData.picture ? Buffer.from(musicMetaData.picture.data) : null;
+
+    if (musicMetaData.picture) {
+      let imageBuffer = Buffer.from(musicMetaData.picture.data);
+      // imageBuffer = await imageCompression(imageBuffer);
+      music.picture = imageBuffer;
+    } else {
+      music.picture = null;
+    }
+
     music.create_at = await new Date().toISOString();
     music.update_at = await new Date().toISOString();
-    console.log(typeof musicMetaData.picture.data)
     await db.addMusic(music);
   }
 
   await db.close();
 
   return musicFiles;
-}
+};
 
 module.exports = {
   fullScanMusic,
-}
+};

@@ -10,7 +10,7 @@ class Database {
   init() {
     return new Promise(() => {
       let songsTable = `CREATE TABLE IF NOT EXISTS songs (
-        id INTEGER PRIMARY KEY,
+        id TEXT PRIMARY KEY,
         title TEXT,
         artist TEXT,
         album TEXT,
@@ -21,8 +21,8 @@ class Database {
         size INTEGER,
         hash TEXT,
         picture BLOB,
-        created_at TEXT,
-        updated_at TEXT)`;
+        create_at TEXT,
+        update_at TEXT)`;
 
       let headerTable = `CREATE TABLE IF NOT EXISTS header (
           num_songs INTEGER,
@@ -39,8 +39,9 @@ class Database {
   addMusic(song) {
     return new Promise((resolve, reject) => {
       this.db.run(
-        `INSERT INTO songs (title, artist, album, year, genre, path, duration, size, hash, picture, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO songs (id, title, artist, album, year, genre, path, duration, size, hash, picture, create_at, update_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
+          song.id,
           song.title,
           song.artist,
           song.album,
@@ -51,8 +52,8 @@ class Database {
           song.size,
           song.hash,
           song.picture,
-          song.created_at,
-          song.updated_at,
+          song.create_at,
+          song.update_at,
         ],
         (err) => {
           if (err) reject(err);
@@ -65,7 +66,7 @@ class Database {
   update(song) {
     return new Promise((resolve, reject) => {
       this.db.run(
-        `UPDATE songs SET title = ?, artist = ?, album = ?, year = ?, genre = ?, path = ?, duration = ?, size = ?, updated_at = ? WHERE id = ?`,
+        `UPDATE songs SET title = ?, artist = ?, album = ?, year = ?, genre = ?, path = ?, duration = ?, size = ?, update_at = ? WHERE id = ?`,
         [
           song.title,
           song.artist,
@@ -140,7 +141,7 @@ module.exports = Database;
         path TEXT,
         duration INTEGER,
         size INTEGER,
-        created_at INTEGER,
+        create_at INTEGER,
         updated_at INTEGER
       );`;
 

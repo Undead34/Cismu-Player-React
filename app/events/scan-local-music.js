@@ -6,5 +6,5 @@ module.exports = {
   handle: false,
   async execute(event) {
     fullScanMusic()
-  },
+  }
 };
