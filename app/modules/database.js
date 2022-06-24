@@ -68,6 +68,23 @@ class Database {
     await this.run(sql, values);
   }
 
+  async delete(id) {
+    let sql = `DELETE FROM songs WHERE id = ?;`;
+    await this.run(sql, [id]);
+  }
+
+  async getAll() {
+    let sql = `SELECT * FROM songs;`;
+    let rows = await this.db.prepare(sql).all();
+    return rows;
+  }
+
+  async getById(id) {
+    let sql = `SELECT * FROM songs WHERE id = ?;`;
+    let row = await this.db.prepare(sql).get(id);
+    return row;
+  }
+
   run(sql) {
     return this.db.prepare(sql).run();
   }
