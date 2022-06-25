@@ -5,20 +5,6 @@ const jsmediatags = require("jsmediatags");
 const Database = require("../database");
 const crypto = require("crypto");
 const path = require("path");
-const jimp = require("jimp");
-
-const imageCompression = async (buffer) => {
-  let image = await jimp.read(buffer);
-  console.log(image)
-  // // await image.resize(256, 256) // 
-  // let f = await image.quality(60); // set JPEG quality
-  // let newBuffer = await f.getBuffer(jimp.AUTO);
-
-  // console.log(buffer.length); // 17196
-  // console.log(newBuffer); // 35060
-
-  return image;
-};
 
 // get the metadata of the music, I am using buffers to read the file only once
 const getMetaData = async (buffer) => {
@@ -77,8 +63,9 @@ const fullScanMusic = async () => {
 
     if (musicMetaData.picture) {
       let imageBuffer = Buffer.from(musicMetaData.picture.data);
-      // imageBuffer = await imageCompression(imageBuffer);
-      music.picture = imageBuffer;
+      let imageCompress = await fileSystem.compressImage(imageBuffer);
+      if (imageCompress) music.picture = imageCompress;
+      else music.picture = imageBuffer;
     } else {
       music.picture = null;
     }

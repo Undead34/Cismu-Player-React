@@ -1,11 +1,59 @@
+const sharp = require("sharp");
+const zlib = require("zlib");
 const fs = require("fs");
+
+/**
+ * Compress o file by path or buffer
+ * @param {*} path path to compress
+ * @returns buffer compressed
+ */
+const compress = (path) => {
+  return new Promise((resolve, rejects) => {
+    try {
+      if (typeof path === "string") {
+        let data = fs.readFileSync(path);
+        let compressed = zlib.deflateSync(data);
+        resolve(compressed);
+      } else {
+        let compressed = zlib.deflateSync(path);
+        resolve(compressed);
+      }
+    } catch (error) {
+      console.log(error.message);
+      rejects();
+    }
+  });
+};
+
+/**
+ * descompress a file by path or buffer
+ * @param {*} path path to descompress
+ * @returns buffer descompressed
+ */
+const descompress = (path) => {
+  return new Promise((resolve, rejects) => {
+    try {
+      if (typeof path === "string") {
+        let data = fs.readFileSync(path);
+        let inflated = zlib.inflateSync(data);
+        resolve(inflated);
+      } else {
+        let inflated = zlib.inflateSync(path);
+        resolve(inflated);
+      }
+    } catch (error) {
+      console.log(error.message);
+      rejects();
+    }
+  });
+};
 
 /**
  * Remove recursively a folder
  * @param {*} path path to remove folder
  * @returns null
  */
- const deleteFolder = (path) => {
+const deleteFolder = (path) => {
   return new Promise((resolve, rejects) => {
     try {
       fs.rmdirSync(path, { recursive: true });
@@ -15,14 +63,14 @@ const fs = require("fs");
       rejects();
     }
   });
-}
+};
 
 /**
  * Create a folder
  * @param {string} path path to create
  * @returns null
  */
- const createFolder = (path) => {
+const createFolder = (path) => {
   return new Promise((resolve, rejects) => {
     try {
       fs.mkdirSync(path, { recursive: true });
@@ -32,14 +80,14 @@ const fs = require("fs");
       rejects();
     }
   });
-}
+};
 
 /**
  * Validate if a file or folder exists
  * @param {string} path path to validate
  * @returns boolean
  */
- const exists = (path) => {
+const exists = (path) => {
   return new Promise((resolve, rejects) => {
     try {
       let exists = fs.existsSync(path);
@@ -49,14 +97,14 @@ const fs = require("fs");
       rejects();
     }
   });
-}
+};
 
 /**
  * Read data from file
  * @param {string} path path file to read
  * @returns data readed
  */
- const readFile = (path) => {
+const readFile = (path) => {
   return new Promise((resolve, rejects) => {
     try {
       let data = fs.readFileSync(path);
@@ -66,14 +114,14 @@ const fs = require("fs");
       rejects();
     }
   });
-}
+};
 
 /**
  * List files in a folder
  * @param {string} path path to list directory
  * @returns array of files
  */
- const listFiles = (path) => {
+const listFiles = (path) => {
   return new Promise((resolve, rejects) => {
     try {
       let files = fs.readdirSync(path);
@@ -83,7 +131,7 @@ const fs = require("fs");
       rejects();
     }
   });
-}
+};
 
 /**
  * Remove a file
@@ -100,7 +148,7 @@ const deleteFile = (path) => {
       rejects();
     }
   });
-}
+};
 
 const getFileSize = (path) => {
   return new Promise((resolve, rejects) => {
@@ -112,8 +160,26 @@ const getFileSize = (path) => {
       rejects();
     }
   });
-}
+};
 
+/**
+ * Compress image by buffer
+ * @param {*} buffer buffer to compress
+ * @returns buffer compressed
+ */
+
+const compressImage = async (buffer) => {
+  try {
+    let compressed = await sharp(buffer)
+      .resize(300, 300)
+      .jpeg({ quality: 60 })
+      .toBuffer();
+    return compressed;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+};
 
 module.exports = {
   listFiles,
@@ -122,5 +188,8 @@ module.exports = {
   deleteFolder,
   createFolder,
   exists,
-  getFileSize
-}
+  getFileSize,
+  compress,
+  descompress,
+  compressImage,
+};
