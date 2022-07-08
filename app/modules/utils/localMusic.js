@@ -23,7 +23,18 @@ const getMetaData = async (buffer) => {
   });
 };
 
-const fullScanMusic = async () => {
+const getLocalMusic = async () => {
+  let musics = await fileSystem.listFiles();
+  
+  console.log(musics);
+};
+
+module.exports = {
+  getLocalMusic,
+};
+
+
+/*
   const db = new Database();
   db.clearAllMusic();
 
@@ -78,8 +89,4 @@ const fullScanMusic = async () => {
   await db.close();
 
   return musicFiles;
-};
-
-module.exports = {
-  fullScanMusic,
-};
+*/
