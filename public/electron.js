@@ -1,8 +1,9 @@
-const { bootstrapTest } = require("../app/modules/onStartup");
 const { app, BrowserWindow, ipcMain, session } = require("electron");
+const { bootstrapTest } = require("../app/modules/onStartup");
 const isDev = require("electron-is-dev");
 const path = require("path");
 const fs = require("fs");
+const a = require("../app/modules/fileSystem");
 
 // IPC main events listeners
 const listenEvents = async () => {

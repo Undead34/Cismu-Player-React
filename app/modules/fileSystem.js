@@ -1,6 +1,7 @@
 const sharp = require("sharp");
 const zlib = require("zlib");
 const fs = require("fs");
+var path = require("path");
 
 /**
  * Compress o file by path or buffer
@@ -180,6 +181,38 @@ const compressImage = async (buffer) => {
     return false;
   }
 };
+
+const RecursiveDirectoryScanning = (dir, callback) => {
+  var results = [];
+
+  fs.readdir(dir, function (err, list) {
+    if (err) return callback(err);
+
+    for (let x = 0; x < list.length; x++) {
+      let file = list.length[x];
+
+      if (!file) return callback(null, results);
+      file = path.resolve(dir, file);
+
+      fs.stat(file, function (err, stat) {
+        if (stat && stat.isDirectory()) {
+          RecursiveDirectoryScanning(file, function (err, res) {
+            results = results.concat(res);
+            next();
+          });
+        } else {
+          results.push(file);
+          next();
+        }
+      });
+    }
+  });
+};
+
+RecursiveDirectoryScanning(process.env.HOME, function (err, results) {
+  if (err) throw err;
+  console.log(results);
+});
 
 module.exports = {
   listFiles,
